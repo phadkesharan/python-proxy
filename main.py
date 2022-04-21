@@ -5,15 +5,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 API_ENDPOINT = "https://development.wpmonitoring.com"
-
 LOGIN_ENDPOINT = API_ENDPOINT + "/api/login/"
 CSRF_ENDPOINT = API_ENDPOINT + "/api/csrf/"
-DATA_ENDPOINT = API_ENDPOINT + "/api/sites/"
+SITES_ENDPOINT = API_ENDPOINT + "/api/sites/"
 
 class User(BaseModel):
     email: str
     password: str
-
 
 
 app = FastAPI()
@@ -36,20 +34,36 @@ def root():
 #     return {"Message": "Test Complete"}
 
 
-@app.post("/login/")
-async def login(user: User):
+@app.post("/sites/")
+async def sites(user: User):
     
     LOGIN_CREDENTIALS = {
         "email": user.email,
         "password": user.password
     }
 
-    # return {"message": "working"}
+    res_login = requests.post(LOGIN_ENDPOINT, json=LOGIN_CREDENTIALS)
+    print("login reponse ", res_login.text)
+    print("cookies, ", res_login.cookies)
+    res = requests.get(SITES_ENDPOINT, cookies=res_login.cookies)
+    print("response : ", res.json())
+
+    return res.json()
+
+@app.post("/sites/{sites_url}/")
+async def sites(user: User, sites_url: str):
+    
+    LOGIN_CREDENTIALS = {
+        "email": user.email,
+        "password": user.password
+    }
 
     res_login = requests.post(LOGIN_ENDPOINT, json=LOGIN_CREDENTIALS)
     print("login reponse ", res_login.text)
     print("cookies, ", res_login.cookies)
-    res = requests.get(DATA_ENDPOINT, cookies=res_login.cookies)
+    res = requests.get(SITES_ENDPOINT + sites_url + "/", cookies=res_login.cookies)
     print("response : ", res.json())
 
     return res.json()
+
+
