@@ -8,6 +8,7 @@ API_ENDPOINT = "https://development.wpmonitoring.com"
 LOGIN_ENDPOINT = API_ENDPOINT + "/api/login/"
 CSRF_ENDPOINT = API_ENDPOINT + "/api/csrf/"
 SITES_ENDPOINT = API_ENDPOINT + "/api/sites/"
+LOG_ENDPOINT = API_ENDPOINT + "/api/security/logs/"
 
 class User(BaseModel):
     email: str
@@ -66,4 +67,16 @@ async def sites(user: User, sites_url: str):
 
     return res.json()
 
+@app.post("/logs/{site_url}")
+async def getSiteLog(user: User, site_url: str):
 
+    LOGIN_CREDENTIALS = {
+            "email": user.email,
+            "password": user.password
+        }
+
+    res_login = requests.post(LOGIN_ENDPOINT, json=LOGIN_CREDENTIALS)
+    print("login reponse ", res_login.text)
+    print("cookies, ", res_login.cookies)
+    res = requests.get(LOG_ENDPOINT + site_url + "/", cookies=res_login.cookies)
+    print("response : ", res.json())
