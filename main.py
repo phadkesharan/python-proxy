@@ -67,7 +67,7 @@ async def sites(user: User, sites_url: str):
 
     return res.json()
 
-@app.post("/logs/{site_url}")
+@app.post("/logs/{site_url}/")
 async def getSiteLog(user: User, site_url: str):
 
     LOGIN_CREDENTIALS = {
