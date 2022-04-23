@@ -136,3 +136,35 @@ async def reports(user: User):
     print("response : ", res.json())
 
     return res.json()
+
+@app.post("/reports/{yearmonth}/")
+async def reportsMonth(user: User, yearmonth: str):
+
+    LOGIN_CREDENTIALS = {
+            "email": user.email,
+            "password": user.password
+        }
+
+    res_login = requests.post(LOGIN_ENDPOINT, json=LOGIN_CREDENTIALS)
+    print("login reponse ", res_login.text)
+    print("cookies, ", res_login.cookies)
+    res = requests.get(REPORTS_ENDPOINT + yearmonth + "/", cookies=res_login.cookies)
+    print("response : ", res.json())
+
+    return res.json()
+
+@app.post("/reports/{site_url}/{yearmonth}/")
+async def reportsMonthSite(user: User, site_url: str, yearmonth: str):
+    
+    LOGIN_CREDENTIALS = {
+            "email": user.email,
+            "password": user.password
+        }
+
+    res_login = requests.post(LOGIN_ENDPOINT, json=LOGIN_CREDENTIALS)
+    print("login reponse ", res_login.text)
+    print("cookies, ", res_login.cookies)   
+    res = requests.get(REPORTS_ENDPOINT + site_url + "/" + yearmonth + "/", cookies=res_login.cookies)
+    print("response : ", res.json())
+
+    return res.json()
