@@ -11,6 +11,7 @@ CSRF_ENDPOINT = API_ENDPOINT + "/api/csrf/"
 SITES_ENDPOINT = API_ENDPOINT + "/api/sites/"
 LOG_ENDPOINT = API_ENDPOINT + "/api/security/logs/"
 PACKAGE_ENDPOINT = API_ENDPOINT + "/api/packages/"
+DASHBOARD_ENDPOINT = API_ENDPOINT + "/api/dashboard/"
 
 class User(BaseModel):
     email: str
@@ -102,4 +103,19 @@ async def packages(user: User):
     print("response : ", res.json())
 
     return res.json()
-    
+
+@app.post("/dashboard/")
+async def dashboard(user: User):
+
+    LOGIN_CREDENTIALS = {
+            "email": user.email,
+            "password": user.password
+        }
+
+    res_login = requests.post(LOGIN_ENDPOINT, json=LOGIN_CREDENTIALS)
+    print("login reponse ", res_login.text)
+    print("cookies, ", res_login.cookies)
+    res = requests.get(DASHBOARD_ENDPOINT, cookies=res_login.cookies)
+    print("response : ", res.json())
+
+    return res.json()
