@@ -12,6 +12,7 @@ SITES_ENDPOINT = API_ENDPOINT + "/api/sites/"
 LOG_ENDPOINT = API_ENDPOINT + "/api/security/logs/"
 PACKAGE_ENDPOINT = API_ENDPOINT + "/api/packages/"
 DASHBOARD_ENDPOINT = API_ENDPOINT + "/api/dashboard/"
+REPORTS_ENDPOINT = API_ENDPOINT + "/api/reports/"
 
 class User(BaseModel):
     email: str
@@ -116,6 +117,22 @@ async def dashboard(user: User):
     print("login reponse ", res_login.text)
     print("cookies, ", res_login.cookies)
     res = requests.get(DASHBOARD_ENDPOINT, cookies=res_login.cookies)
+    print("response : ", res.json())
+
+    return res.json()
+
+@app.post("/reports/")
+async def reports(user: User):
+
+    LOGIN_CREDENTIALS = {
+            "email": user.email,
+            "password": user.password
+        }
+
+    res_login = requests.post(LOGIN_ENDPOINT, json=LOGIN_CREDENTIALS)
+    print("login reponse ", res_login.text)
+    print("cookies, ", res_login.cookies)
+    res = requests.get(REPORTS_ENDPOINT, cookies=res_login.cookies)
     print("response : ", res.json())
 
     return res.json()
