@@ -14,6 +14,8 @@ PACKAGE_ENDPOINT = API_ENDPOINT + "/api/packages/"
 DASHBOARD_ENDPOINT = API_ENDPOINT + "/api/dashboard/"
 REPORTS_ENDPOINT = API_ENDPOINT + "/api/reports/"
 SECURITY_ENDPOINT = API_ENDPOINT + "/api/security/"
+SETTINGS_ENDPOINT = API_ENDPOINT + "/api/settings/"
+
 
 
 class User(BaseModel):
@@ -85,6 +87,22 @@ async def getSiteLog(user: User, site_url: str):
     print("login reponse ", res_login.text)
     print("cookies, ", res_login.cookies)
     res = requests.get(LOG_ENDPOINT + site_url + "/", cookies=res_login.cookies)
+    print("response : ", res.json())
+
+    return res.json()
+
+@app.post("/logs/")
+async def getSiteLogAll(user: User):
+
+    LOGIN_CREDENTIALS = {
+            "email": user.email,
+            "password": user.password
+        }
+
+    res_login = requests.post(LOGIN_ENDPOINT, json=LOGIN_CREDENTIALS)
+    print("login reponse ", res_login.text)
+    print("cookies, ", res_login.cookies)
+    res = requests.get(LOG_ENDPOINT, cookies=res_login.cookies)
     print("response : ", res.json())
 
     return res.json()
@@ -184,5 +202,21 @@ async def reports(user: User):
     print("cookies, ", res_login.cookies)
     res = requests.get(SECURITY_ENDPOINT, cookies=res_login.cookies)
     print("response : ", res.json())
+
+    return res.json()
+
+@app.post("/settings/")
+async def reports(user: User):
+
+    LOGIN_CREDENTIALS = {
+            "email": user.email,
+            "password": user.password
+        }
+
+    res_login = requests.post(LOGIN_ENDPOINT, json=LOGIN_CREDENTIALS)
+    print("login reponse ", res_login.text)
+    print("cookies, ", res_login.cookies)
+    res = requests.get(SETTINGS_ENDPOINT, cookies=res_login.cookies)
+    print("response : ", res.json())    
 
     return res.json()
