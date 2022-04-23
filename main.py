@@ -13,6 +13,8 @@ LOG_ENDPOINT = API_ENDPOINT + "/api/security/logs/"
 PACKAGE_ENDPOINT = API_ENDPOINT + "/api/packages/"
 DASHBOARD_ENDPOINT = API_ENDPOINT + "/api/dashboard/"
 REPORTS_ENDPOINT = API_ENDPOINT + "/api/reports/"
+SECURITY_ENDPOINT = API_ENDPOINT + "/api/security/"
+
 
 class User(BaseModel):
     email: str
@@ -165,6 +167,22 @@ async def reportsMonthSite(user: User, site_url: str, yearmonth: str):
     print("login reponse ", res_login.text)
     print("cookies, ", res_login.cookies)   
     res = requests.get(REPORTS_ENDPOINT + site_url + "/" + yearmonth + "/", cookies=res_login.cookies)
+    print("response : ", res.json())
+
+    return res.json()
+
+@app.post("/security/")
+async def reports(user: User):
+
+    LOGIN_CREDENTIALS = {
+            "email": user.email,
+            "password": user.password
+        }
+
+    res_login = requests.post(LOGIN_ENDPOINT, json=LOGIN_CREDENTIALS)
+    print("login reponse ", res_login.text)
+    print("cookies, ", res_login.cookies)
+    res = requests.get(SECURITY_ENDPOINT, cookies=res_login.cookies)
     print("response : ", res.json())
 
     return res.json()
