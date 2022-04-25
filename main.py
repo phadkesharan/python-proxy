@@ -3,6 +3,7 @@ from fastapi import FastAPI
 import requests
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from typing import List
 
 
 API_ENDPOINT = "https://development.wpmonitoring.com"
@@ -17,10 +18,17 @@ SECURITY_ENDPOINT = API_ENDPOINT + "/api/security/"
 SETTINGS_ENDPOINT = API_ENDPOINT + "/api/settings/"
 
 
-
+# User model
 class User(BaseModel):
     email: str
     password: str
+
+# site model
+class Site(BaseModel):
+    urls: List[str] = []
+    package_name: str
+    timezone: str
+
 
 
 app = FastAPI()
@@ -220,3 +228,27 @@ async def reports(user: User):
     print("response : ", res.json())    
 
     return res.json()
+
+# Add Sites 
+@app.post('/addSite/')
+async def addSite(user: User, site: Site):
+    LOGIN_CREDENTIALS = {
+        "email": user.email,
+        "password": user.password
+    }
+
+    res_login = requests.post(LOGIN_ENDPOINT, json=LOGIN_CREDENTIALS)
+    print("login reponse ", res_login.text)
+    print("cookies, ", res_login.cookies)
+
+    res_csrf = requests.get(CSRF_ENDPOINT)
+    print(res_csrf.json())
+
+    response = requests.post(SITES_ENDPOINT, {
+        "urls": site.urls,
+        "packages_name": site.package_name,
+        "timzone": site.timezone
+    }, cookies=res_login.cookies)
+
+    print("response : ", response.json())    
+    return response.json()

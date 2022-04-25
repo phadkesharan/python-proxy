@@ -1,0 +1,23 @@
+{
+    "user": {
+        "email": "shivan@wpmonitoring.com",
+        "password": ".c6&*9]9p}w(zIi.QjzD"
+    },
+    "site": {
+        "urls": [
+            "something@somone.com",
+            "asd@asd.com"
+        ],
+        "package_name": "Test",
+        "timezone": "India"
+    },
+    "login": {
+        "email": "shivan@wpmonitoring.com",
+        "password": ".c6&*9]9p}w(zIi.QjzD"
+    },
+    "settings": {
+        "notification_email":"notification@wpmonitoring.com", 
+        "city":"Tilburg"
+    }    
+    
+}
