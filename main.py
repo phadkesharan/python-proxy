@@ -17,7 +17,6 @@ REPORTS_ENDPOINT = API_ENDPOINT + "/api/reports/"
 SECURITY_ENDPOINT = API_ENDPOINT + "/api/security/"
 SETTINGS_ENDPOINT = API_ENDPOINT + "/api/settings/"
 
-
 # User model
 class User(BaseModel):
     email: str
@@ -28,6 +27,10 @@ class Site(BaseModel):
     urls: List[str] = []
     package_name: str
     timezone: str
+
+class Setting(BaseModel):
+    notification: str
+    city: str
 
 
 
@@ -252,3 +255,23 @@ async def addSite(user: User, site: Site):
 
     print("response : ", response.json())    
     return response.json()
+
+
+@app.post('/updateSettings/')
+async def updateSettings(user: User, setting: Setting):
+    LOGIN_CREDENTIALS = {
+        "email": user.email,
+        "password": user.password
+    }
+
+    res_login = requests.post(LOGIN_ENDPOINT, json=LOGIN_CREDENTIALS)
+    print("login reponse ", res_login.text)
+    print("cookies, ", res_login.cookies)
+
+    response = requests.post(SETTINGS_ENDPOINT, {
+        "notification": setting.notification,
+        "city": setting.city
+    }, res_login.cookies)
+
+    print("response : ", response.json())
+
